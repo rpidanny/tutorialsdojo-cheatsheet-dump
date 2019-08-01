@@ -3,16 +3,17 @@ import pdfkit
 import requests
 from bs4 import BeautifulSoup
 
-class TutorialsDojo():
 
+class TutorialsDojo():
     def __init__(self):
-        self.base_url = os.environ.get("TD_URL", 'https://tutorialsdojo.com/aws-cheat-sheets/')
+        self.base_url = os.environ.get(
+            "TD_URL", 'https://tutorialsdojo.com/aws-cheat-sheets/')
 
     def fetch_page(self, url):
         source_code = requests.get(url)
         plain_text = source_code.text
         return BeautifulSoup(plain_text, "html.parser")
-    
+
     def write_file(self, data, file):
         f = open(file, 'w')
         f.write(data)
@@ -20,26 +21,29 @@ class TutorialsDojo():
 
     def get_groups(self):
         page = self.fetch_page(self.base_url)
-        divs = page.findAll('div', {'class': 'fusion-button-wrapper fusion-aligncenter'})
+        divs = page.findAll(
+            'div', {'class': 'fusion-button-wrapper fusion-aligncenter'})
         groups = []
 
         for div in divs:
             link = div.find('a')
-            title = div.find('span', {'class': 'fusion-button-text fusion-button-text-left'})
-            groups.append({
-                'title': title.text,
-                'url': link['href']
-            })
+            title = div.find(
+                'span',
+                {'class': 'fusion-button-text fusion-button-text-left'})
+            groups.append({'title': title.text, 'url': link['href']})
         return groups
-    
+
     def get_topics(self, group):
         page = self.fetch_page(group['url'])
-        divs = page.findAll('div', {'class': 'fusion-button-wrapper fusion-aligncenter'})
+        divs = page.findAll(
+            'div', {'class': 'fusion-button-wrapper fusion-aligncenter'})
         topics = []
 
         for div in divs:
             link = div.find('a')
-            title = div.find('span', {'class': 'fusion-button-text fusion-button-text-left'})
+            title = div.find(
+                'span',
+                {'class': 'fusion-button-text fusion-button-text-left'})
             topics.append({
                 'group': group['title'],
                 'title': title.text,
@@ -50,15 +54,20 @@ class TutorialsDojo():
     def get_content(self, topic):
         page = self.fetch_page(topic['url'])
         div = page.find('div', {'class': 'fusion-text'})
-        
+
         for crap in div.findAll('p', {'data-pm-slice': '1 1 []'}):
             crap.decompose()
 
-        content = str(div).replace('<p>***</p>', '').replace('<p>&nbsp;</p>', '').replace('–', '-').replace('’',"'")
+        content = str(div).replace('<p>***</p>', '').replace(
+            '<p>&nbsp;</p>', '').replace('–', '-').replace('’', "'")
         return {
-            'group': topic['group'],
-            'title': topic['title'],
-            'body': '<html><title>{}</title><body>{}</body></html>'.format(topic['title'], content)
+            'group':
+            topic['group'],
+            'title':
+            topic['title'],
+            'body':
+            '<html><title>{}</title><body>{}</body></html>'.format(
+                topic['title'], content)
         }
 
     def dump_content(self, content):
@@ -68,7 +77,7 @@ class TutorialsDojo():
         op_file = '{}/{}'.format(path, content['title'])
 
         self.write_file(content['body'], '{}.html'.format(op_file))
-        
+
         options = {
             'quiet': '',
             'page-size': 'A4',
@@ -77,9 +86,9 @@ class TutorialsDojo():
             'margin-bottom': '0.75in',
             'margin-left': '0.75in',
             'encoding': "UTF-8",
-            'custom-header' : [
-                ('Accept-Encoding', 'gzip')
-            ],
+            'custom-header': [('Accept-Encoding', 'gzip')],
             # 'no-outline': None
         }
-        pdfkit.from_file('{}.html'.format(op_file), '{}.pdf'.format(op_file), options=options)
+        pdfkit.from_file('{}.html'.format(op_file),
+                         '{}.pdf'.format(op_file),
+                         options=options)

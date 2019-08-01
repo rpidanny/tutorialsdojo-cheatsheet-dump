@@ -1,5 +1,6 @@
 from tutorialsdojo import TutorialsDojo
 
+
 def main():
     td = TutorialsDojo()
     for group in td.get_groups():
@@ -10,6 +11,7 @@ def main():
             # print(content)
             td.dump_content(content)
         print('\n')
+
 
 if __name__ == "__main__":
     main()
