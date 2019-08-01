@@ -1,6 +1,6 @@
 # Tutorials Dojo Cheatsheet Dump
 
-Dump the entire [tutorialsdojo](https://tutorialsdojo.com/aws-cheat-sheets/ ) cheatsheet library as `html` and `pdf`.
+Dumps the entire [tutorialsdojo](https://tutorialsdojo.com/aws-cheat-sheets/ ) cheatsheet library as `html` and `pdf`.
 
 ## Installation
 
