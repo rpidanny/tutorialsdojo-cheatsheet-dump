@@ -54,7 +54,7 @@ class TutorialsDojo():
         for crap in div.findAll('p', {'data-pm-slice': '1 1 []'}):
             crap.decompose()
 
-        content = str(div).replace('–', '-').replace('’',"'")
+        content = str(div).replace('<p>***</p>', '').replace('<p>&nbsp;</p>', '').replace('–', '-').replace('’',"'")
         return {
             'group': topic['group'],
             'title': topic['title'],
@@ -70,6 +70,7 @@ class TutorialsDojo():
         self.write_file(content['body'], '{}.html'.format(op_file))
         
         options = {
+            'quiet': '',
             'page-size': 'A4',
             'margin-top': '0.75in',
             'margin-right': '0.75in',
